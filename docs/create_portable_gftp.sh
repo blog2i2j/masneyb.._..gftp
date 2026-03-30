@@ -14,17 +14,17 @@ outdir=gftp-${date}-${gitrev}__${arch}
 
 mkdir -p ${outdir}
 
-if [ ! -f src/gtk/gftp-gtk ] ; then
-    if [ ! -f ./configure ] ; then
-        ./autogen.sh
-    fi
-    ./configure --prefix=/usr --disable-ssl --disable-nls
-    make
+builddir=build
+gtk_bin="${builddir}/src/gtk/gftp-gtk"
+
+if [ ! -f "${gtk_bin}" ] ; then
+    meson setup "${builddir}" --prefix=/usr -Dssl=false || exit 1
+    ninja -C "${builddir}" || exit 1
     sync
 fi
 
 mkdir -p ${outdir}/gtk
-cp -a src/gtk/gftp-gtk ${outdir}/gtk/gftp-${arch}
+cp -a "${gtk_bin}" ${outdir}/gtk/gftp-${arch}
 cp -a docs/sample.gftp ${outdir}
 mkdir -p ${outdir}/doc
 cp -a README.md LICENSE AUTHORS docs/USERS-GUIDE ChangeLog ${outdir}/doc

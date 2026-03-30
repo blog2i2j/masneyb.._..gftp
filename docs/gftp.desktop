@@ -6,6 +6,6 @@ GenericName=gFTP
 Exec=gftp
 Terminal=false
 Type=Application
-Icon=gftp.png
+Icon=gftp
 Categories=Network;
 Keywords=ftp;network;transfer;file;

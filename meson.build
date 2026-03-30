@@ -22,6 +22,28 @@ add_project_arguments(f'-DPACKAGE_NAME="@project_name@"', language:'c')
 cc = meson.get_compiler('c')
 pthread = cc.find_library('pthread', required: true)
 
+have_gettext = false
+gftp_intl_dep = declare_dependency()
+
+intl_dep = dependency('intl', required: false)
+if not intl_dep.found()
+  intl_dep = cc.find_library('intl', required: false)
+endif
+have_gettext_lib = intl_dep.found()
+
+# GNU/Linux often links libintl only via gettext-runtime; glibc does not ship full gettext.
+have_gettext = have_gettext_lib or cc.has_function(
+  'bindtextdomain',
+  prefix: '#include <libintl.h>'
+)
+if have_gettext
+  add_project_arguments('-DENABLE_NLS', language: 'c')
+  add_project_arguments('-DHAVE_GETTEXT', language: 'c')
+  if have_gettext_lib
+    gftp_intl_dep = intl_dep
+  endif
+endif
+
 add_project_arguments('-D_REENTRANT', language:'c')
 add_project_arguments(f'-DVERSION="@project_version@"', language:'c')
 
