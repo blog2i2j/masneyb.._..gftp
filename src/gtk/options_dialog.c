@@ -718,9 +718,9 @@ options_dialog (gpointer data)
   gftp_option_data = _init_option_data ();
 
   gftp_option_data->dialog = gtk_dialog_new_with_buttons (_("Options"), NULL, 0,
-                                        "gtk-cancel",
+                                        _("_Cancel"),
                                         GTK_RESPONSE_CANCEL,
-                                        "gtk-ok",
+                                        _("_OK"),
                                         GTK_RESPONSE_OK,
                                         NULL);
   gtk_container_set_border_width (GTK_CONTAINER (gftp_option_data->dialog), 2);

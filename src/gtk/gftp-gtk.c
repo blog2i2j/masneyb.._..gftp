@@ -684,6 +684,20 @@ CreateMenus (GtkWidget * parent)
 
   gtk_action_group_add_actions(actions, menu_items, nmenu_items, NULL);
 
+#if GTK_MAJOR_VERSION >= 3
+  {
+    guint ii;
+    for (ii = 0; ii < nmenu_items; ii++)
+      {
+        if (menu_items[ii].stock_id == NULL)
+          continue;
+        GtkAction *act = gtk_action_group_get_action (actions, menu_items[ii].name);
+        if (act != NULL)
+          gtk_action_set_icon_name (act, gftp_icon_name (menu_items[ii].stock_id));
+      }
+  }
+#endif
+
   current_wdata = &window2;
 
   // colored msgs
@@ -755,7 +769,7 @@ CreateConnectToolbar (GtkWidget * parent)
   toolbar = box;
 #endif
 
-  tempwid = gtk_image_new_from_icon_name ("gtk-network", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  tempwid = gftp_image_new_from_icon_name ("gtk-network", GTK_ICON_SIZE_SMALL_TOOLBAR);
 
   openurl_btn = gtk_button_new ();
   // gtk4 - gtk_button_set_child (openurl_btn, tempwid);
@@ -856,7 +870,7 @@ CreateConnectToolbar (GtkWidget * parent)
   gftp_lookup_global_option ("default_protocol", &default_protocol);
   populate_combo_and_select_protocol (toolbar_combo_protocol, default_protocol);
 
-  tempwid = gtk_image_new_from_icon_name ("gtk-stop", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  tempwid = gftp_image_new_from_icon_name ("gtk-stop", GTK_ICON_SIZE_SMALL_TOOLBAR);
 
   stop_btn = gtk_button_new ();
 
@@ -1140,14 +1154,14 @@ CreateFTPWindows (GtkWidget * ui)
   gtk_box_pack_start (GTK_BOX (dlbox), upload_right_arrow, TRUE, FALSE, 0);
   g_signal_connect_swapped (G_OBJECT (upload_right_arrow), "clicked",
                             G_CALLBACK (put_files), NULL);
-  w = gtk_image_new_from_icon_name ("gtk-go-forward", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  w = gftp_image_new_from_icon_name ("gtk-go-forward", GTK_ICON_SIZE_SMALL_TOOLBAR);
   gtk_container_add (GTK_CONTAINER (upload_right_arrow), w);
 
   download_left_arrow = gtk_button_new ();
   gtk_box_pack_start (GTK_BOX (dlbox), download_left_arrow, TRUE, FALSE, 0);
   g_signal_connect_swapped (G_OBJECT (download_left_arrow), "clicked",
                             G_CALLBACK (get_files), NULL);
-  w = gtk_image_new_from_icon_name ("gtk-go-back", GTK_ICON_SIZE_SMALL_TOOLBAR);
+  w = gftp_image_new_from_icon_name ("gtk-go-back", GTK_ICON_SIZE_SMALL_TOOLBAR);
   gtk_container_add (GTK_CONTAINER (download_left_arrow), w);
 
   window2.prefix_col_str = "remote";

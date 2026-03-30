@@ -240,9 +240,9 @@ gftpui_ask_transfer (gftp_transfer * tdata)
   size_t len;
 
   dialog = gtk_dialog_new_with_buttons (_("Transfer Files"), NULL, 0, 
-                                        "gtk-cancel",
+                                        _("_Cancel"),
                                         GTK_RESPONSE_CANCEL,
-                                        "gtk-ok",
+                                        _("_OK"),
                                         GTK_RESPONSE_OK,
                                         NULL);
 

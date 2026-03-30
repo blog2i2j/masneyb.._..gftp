@@ -336,7 +336,7 @@ view_file (char *filename, int fd, unsigned int viewedit, unsigned int del_file,
     g_free (non_utf8);
 
   dialog = gtk_dialog_new_with_buttons (filename, NULL, 0,
-                                        "gtk-close",
+                                        _("_Close"),
                                         GTK_RESPONSE_CLOSE,
                                         NULL);
 

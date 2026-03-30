@@ -25,6 +25,57 @@
 
 #include "gftp-gtk.h"
 
+const char *
+gftp_icon_name (const char *name)
+{
+#if GTK_MAJOR_VERSION < 3
+  return name;
+#else
+  static const struct
+  {
+    const char *legacy;
+    const char *icon;
+  } map[] = {
+    { "gtk-about", "help-about" },
+    { "gtk-add", "list-add" },
+    { "gtk-cancel", "dialog-cancel" },
+    { "gtk-clear", "edit-clear" },
+    { "gtk-close", "window-close" },
+    { "gtk-delete", "edit-delete" },
+    { "gtk-go-back", "go-previous" },
+    { "gtk-go-down", "go-down" },
+    { "gtk-go-forward", "go-next" },
+    { "gtk-go-up", "go-up" },
+    { "gtk-missing-image", "image-missing" },
+    { "gtk-network", "network-transmit-receive" },
+    { "gtk-new", "document-new" },
+    { "gtk-ok", "dialog-ok" },
+    { "gtk-open", "document-open" },
+    { "gtk-preferences", "preferences-system" },
+    { "gtk-properties", "document-properties" },
+    { "gtk-quit", "application-exit" },
+    { "gtk-refresh", "view-refresh" },
+    { "gtk-save", "document-save" },
+    { "gtk-stop", "process-stop" },
+    { NULL, NULL }
+  };
+  gsize i;
+
+  if (name == NULL)
+    return NULL;
+  for (i = 0; map[i].legacy != NULL; i++)
+    if (strcmp (name, map[i].legacy) == 0)
+      return map[i].icon;
+  return name;
+#endif
+}
+
+GtkWidget *
+gftp_image_new_from_icon_name (const char *icon_name, GtkIconSize size)
+{
+  return gtk_image_new_from_icon_name (gftp_icon_name (icon_name), size);
+}
+
 void remove_files_window (gftp_window_data * wdata)
 {
   DEBUG_PRINT_FUNC
@@ -676,10 +727,10 @@ TextEntryDialog (GtkWindow * parent_window,       /* nullable */
   switch (okbutton)
     {
       case gftp_dialog_button_ok:
-        yes_text = "gtk-ok";
+        yes_text = _("_OK");
         break;
       case gftp_dialog_button_create:
-        yes_text = "gtk-add";
+        yes_text = _("C_reate");
         break;
       case gftp_dialog_button_change:
         yes_text = _("Change");
@@ -691,7 +742,7 @@ TextEntryDialog (GtkWindow * parent_window,       /* nullable */
         yes_text = _("Rename");
         break;
       default:
-        yes_text = "gtk-missing-image";
+        yes_text = _("_OK");
         break;
     }
 
@@ -713,7 +764,7 @@ TextEntryDialog (GtkWindow * parent_window,       /* nullable */
   gtk_widget_set_size_request (dialog, 380, -1);
   set_window_icon (GTK_WINDOW(dialog), NULL);
 
-  gtk_dialog_add_button (GTK_DIALOG (dialog), "gtk-cancel", GTK_RESPONSE_NO);
+  gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_NO);
   gtk_dialog_add_button (GTK_DIALOG (dialog), yes_text,     GTK_RESPONSE_YES);
 
   gtk_container_set_border_width (GTK_CONTAINER (dialog), 6);
@@ -842,6 +893,20 @@ void set_window_icon(GtkWindow *window, char *icon_name)
   //DEBUG_PRINT_FUNC
   GdkPixbuf *pixbuf;
   char *img_path;
+
+#if GTK_MAJOR_VERSION >= 3
+  {
+    GtkIconTheme *theme = gtk_icon_theme_get_default ();
+    pixbuf = gtk_icon_theme_load_icon (theme, "gftp", 48, 0, NULL);
+    if (pixbuf)
+      {
+        gtk_window_set_icon (window, pixbuf);
+        g_object_unref (pixbuf);
+        return;
+      }
+  }
+#endif
+
   if (icon_name)
     img_path = get_image_path (icon_name);
   else
@@ -851,7 +916,6 @@ void set_window_icon(GtkWindow *window, char *icon_name)
     g_free (img_path);
     if (pixbuf) {
       gtk_window_set_icon (window, pixbuf);
-      //gtk_window_set_icon_name (window, gftp_version);
       g_object_unref(pixbuf);
     }
   }
@@ -906,23 +970,13 @@ new_menu_item (GtkMenu * menu, char * label, char * icon_name,
    //DEBUG_PRINT_FUNC
    GtkMenuItem *item = NULL;
 
-   /* 0=normal 1=image 2=stock 3=check 4=separator */
+   /* 0=normal 1=image 3=check 4=separator */
    int type = 0;
 
    if (icon_name) {
       type = 1;
-      if (strncmp (icon_name, "gtk-", 4) == 0)
-      {
-         type = 2; /*  GTK_STOCK_*   */
-         GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-         icon_theme = gtk_icon_theme_get_default();
-         if (gtk_icon_theme_has_icon(icon_theme, icon_name)) {
-            /* icon name is in icon theme.. don't use GTK_STOCK.. */
-            type = 1;
-         }
-      } else if (strcmp (icon_name, "-check-") == 0) {
+      if (strcmp (icon_name, "-check-") == 0)
          type = 3;
-      }
    }
    if (!label && !icon_name) {
       type = 4;
@@ -936,10 +990,7 @@ new_menu_item (GtkMenu * menu, char * label, char * icon_name,
      case 1: /* image */
         item = GTK_MENU_ITEM (gtk_image_menu_item_new_with_mnemonic (label));
         gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item),
-               gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU));
-        break;
-     case 2: /* stock */
-        item = GTK_MENU_ITEM (gtk_image_menu_item_new_from_stock (label, NULL));
+               gftp_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU));
         break;
      case 3: /* check */
         item = GTK_MENU_ITEM(gtk_check_menu_item_new_with_mnemonic (label));
