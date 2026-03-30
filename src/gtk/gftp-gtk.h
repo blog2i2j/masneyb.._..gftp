@@ -353,6 +353,11 @@ void display_cached_logs			( void );
 
 char * get_image_path 				( char *filename);
 
+const char *gftp_icon_name (const char *stock_or_icon);
+
+GtkWidget *gftp_image_new_from_icon_name (const char *icon_name,
+                                          GtkIconSize size);
+
 void set_window_icon (GtkWindow *window, char *icon_name);
 void glist_to_combobox (GList *list, GtkWidget *combo);
 void populate_combo_and_select_protocol (GtkWidget *combo, char * selected_protocol);

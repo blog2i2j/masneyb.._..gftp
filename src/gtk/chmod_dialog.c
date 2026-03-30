@@ -130,10 +130,10 @@ chmod_dialog (gpointer data)
 
   // buttons
   ButtonCancel = gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
-  IconCancel   = gtk_image_new_from_icon_name ("gtk-cancel", GTK_ICON_SIZE_BUTTON);
+  IconCancel   = gftp_image_new_from_icon_name ("gtk-cancel", GTK_ICON_SIZE_BUTTON);
   gtk_button_set_image (GTK_BUTTON (ButtonCancel), IconCancel);
   ButtonOK     = gtk_dialog_add_button (GTK_DIALOG (dialog), _("_OK"),     GTK_RESPONSE_OK);
-  IconOK       = gtk_image_new_from_icon_name ("gtk-ok", GTK_ICON_SIZE_BUTTON);
+  IconOK       = gftp_image_new_from_icon_name ("gtk-ok", GTK_ICON_SIZE_BUTTON);
   gtk_button_set_image (GTK_BUTTON (ButtonOK), IconOK);
 
   // vbox

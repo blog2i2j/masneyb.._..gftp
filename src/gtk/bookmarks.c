@@ -566,8 +566,8 @@ void edit_bookmarks (gpointer data)
   gtk_window_set_title (GTK_WINDOW (edit_bookmarks_dialog), _("Edit Bookmarks"));
   set_window_icon (GTK_WINDOW(edit_bookmarks_dialog), NULL);
 
-  gtk_dialog_add_button (GTK_DIALOG (edit_bookmarks_dialog), "gtk-cancel", GTK_RESPONSE_CANCEL);
-  gtk_dialog_add_button (GTK_DIALOG (edit_bookmarks_dialog), "gtk-save",   GTK_RESPONSE_OK);
+  gtk_dialog_add_button (GTK_DIALOG (edit_bookmarks_dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+  gtk_dialog_add_button (GTK_DIALOG (edit_bookmarks_dialog), _("_Save"),   GTK_RESPONSE_OK);
 
   gtk_widget_realize (edit_bookmarks_dialog);
 

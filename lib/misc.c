@@ -961,15 +961,73 @@ char * gftp_build_path (gftp_request * request, const char *first_element, ...)
   return (ret);
 }
 
+#ifdef HAVE_GETTEXT
+
+static gboolean
+gftp_localedir_has_gftp_mo (const char *localedir)
+{
+  GDir *dir;
+  const gchar *name;
+
+  if (localedir == NULL || *localedir == '\0')
+    return FALSE;
+  dir = g_dir_open (localedir, 0, NULL);
+  if (dir == NULL)
+    return FALSE;
+  while ((name = g_dir_read_name (dir)) != NULL)
+    {
+      gchar *mo;
+
+      if (name[0] == '.')
+        continue;
+      mo = g_build_filename (localedir, name, "LC_MESSAGES",
+                             GETTEXT_PACKAGE ".mo", NULL);
+      if (g_file_test (mo, G_FILE_TEST_IS_REGULAR))
+        {
+          g_free (mo);
+          g_dir_close (dir);
+          return TRUE;
+        }
+      g_free (mo);
+    }
+  g_dir_close (dir);
+  return FALSE;
+}
+
+static const char *
+gftp_resolve_localedir (void)
+{
+  const char *override;
+
+  override = g_getenv ("GFTP_LOCALEDIR");
+  if (override != NULL && *override != '\0')
+    return override;
+
+  if (gftp_localedir_has_gftp_mo (LOCALE_DIR))
+    return LOCALE_DIR;
+
+#ifdef GFTP_BUILD_LOCALEDIR
+  if (gftp_localedir_has_gftp_mo (GFTP_BUILD_LOCALEDIR))
+    return GFTP_BUILD_LOCALEDIR;
+#endif
+
+  return LOCALE_DIR;
+}
+
+#endif /* HAVE_GETTEXT */
+
 
 void gftp_locale_init (void)
 {
   DEBUG_PRINT_FUNC
 #ifdef HAVE_GETTEXT
+  const char *localedir;
+
   setlocale (LC_ALL, "");
-  textdomain ("gftp");
-  bindtextdomain ("gftp", LOCALE_DIR);
-  bind_textdomain_codeset ("gftp", "UTF-8");
+  localedir = gftp_resolve_localedir ();
+  bindtextdomain (GETTEXT_PACKAGE, localedir);
+  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+  textdomain (GETTEXT_PACKAGE);
 #endif /* HAVE_GETTEXT */
   // XDG SPEC (XDG_CONFIG_HOME defaults to $HOME/.config/ + gftp)
   BASE_CONF_DIR = g_build_filename (g_get_user_config_dir(), "gftp", NULL);

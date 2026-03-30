@@ -89,11 +89,13 @@ GtkWidget *  transfer_list_create (void)
   //up_pixbuf = gftp_get_pixbuf ("go-up.png");
   //down_pixbuf = gftp_get_pixbuf ("go-down.png");
 
-  if (!up_pixbuf) up_pixbuf = gtk_icon_theme_load_icon (icon_theme,"go-up",16,0, NULL);
-  if (!up_pixbuf) up_pixbuf = gtk_icon_theme_load_icon (icon_theme,"gtk-go-up",16,0, NULL);
+  if (!up_pixbuf) up_pixbuf = gtk_icon_theme_load_icon (
+      icon_theme, gftp_icon_name ("gtk-go-up"), 16, 0, NULL);
+  if (!up_pixbuf) up_pixbuf = gtk_icon_theme_load_icon (icon_theme, "go-up", 16, 0, NULL);
 
-  if (!down_pixbuf) down_pixbuf = gtk_icon_theme_load_icon (icon_theme,"go-down",16,0, NULL);
-  if (!down_pixbuf) down_pixbuf = gtk_icon_theme_load_icon (icon_theme,"gtk-go-down",16,0, NULL);
+  if (!down_pixbuf) down_pixbuf = gtk_icon_theme_load_icon (
+      icon_theme, gftp_icon_name ("gtk-go-down"), 16, 0, NULL);
+  if (!down_pixbuf) down_pixbuf = gtk_icon_theme_load_icon (icon_theme, "go-down", 16, 0, NULL);
 
   //intptr_t colwidth;
 

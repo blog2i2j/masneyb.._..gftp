@@ -5,7 +5,7 @@ The gFTP file transfer client. http://www.gftp.org
 ## What are the requirements to compile/run gFTP?
 
   - Glib 2.32+
-  - GTK 2.14+ (optional)
+  - GTK 3 or GTK 2.14+ (optional; GTK 3 is the default UI build)
   - OpenSSL (optional)
   - libreadline (optional)
   - OpenSSH client (enables SFTP (ssh2) support)
@@ -22,8 +22,11 @@ The gFTP file transfer client. http://www.gftp.org
 
 ## How do I install gFTP?
 
+  GTK+ 3 is used by default. For GTK+ 2 only, configure with
+  `-Dgtk3=false -Dgtk2=true` (and install the matching development packages).
+
   ```
-  meson build
+  meson setup build
   ninja -C build
   ninja -C build install
   ```

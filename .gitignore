@@ -1,6 +1,7 @@
 Makefile
 Makefile.in
-!po/Makefile.in
+build/
+.cache/
 .deps
 *.o
 *.a
@@ -19,7 +20,6 @@ m4/*.m4
 po/*.gmo
 po/*.mo
 po/Makevars.template
-po/POTFILES
 po/Rules-quot
 po/boldquot.sed
 po/en@boldquot.header

@@ -206,8 +206,8 @@ static void show_edit_entry_dlg (gftp_bookmarks_var * xentry)
                _("Edit Entry"),
                GTK_WINDOW (edit_bookmarks_dialog),
                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-               "gtk-cancel", GTK_RESPONSE_CANCEL,
-               "gtk-save",   GTK_RESPONSE_OK,
+               _("_Cancel"), GTK_RESPONSE_CANCEL,
+               _("_Save"),   GTK_RESPONSE_OK,
                NULL);
 
    gtk_window_set_role (GTK_WINDOW (edit_bm_entry_dlg), "Edit Bookmark Entry");
